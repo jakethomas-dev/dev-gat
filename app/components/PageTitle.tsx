@@ -9,7 +9,8 @@ function format(s: string) {
 
 export default function PageTitle({ className = "" }: { className?: string }) {
   const pathname = usePathname();
-  const seg = (pathname || "/").split("/").filter(Boolean)[0] || "dashboard";
+  const parts = (pathname || "/").split("/").filter(Boolean);
+  const seg = parts[0] === "dashboard" ? (parts[1] || "dashboard") : (parts[0] || "dashboard");
   const title = format(seg);
   return <h1 className={`text-xl font-bold mb-4 ${className}`.trim()}>{title}</h1>;
 }

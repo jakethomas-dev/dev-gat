@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./components/Providers";
-import Container from "./components/Container";
-import Sidebar from "./components/Sidebar";
-import PageTitle from "./components/PageTitle";
+import LayoutShell from "./components/LayoutShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,12 +30,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <Container sidebar={<Sidebar />}> 
-            <div className="max-w-5xl mx-auto">
-              <PageTitle />
-            </div>
+          <LayoutShell>
             {children}
-          </Container>
+          </LayoutShell>
         </Providers>
       </body>
     </html>

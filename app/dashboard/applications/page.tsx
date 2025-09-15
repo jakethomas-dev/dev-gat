@@ -1,4 +1,6 @@
-import Card from "../components/Card";
+// Ensure the Card component exists at the correct path, or update the import path accordingly.
+// For example, if Card is in 'app/components/Card.tsx', use:
+import Card from "../../components/Card";
 
 export default function ApplicationsPage() {
   return (
