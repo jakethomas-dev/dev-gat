@@ -34,7 +34,7 @@ const Sidebar = () => {
   return (
   <aside className={`relative h-screen bg-sidebar border-r border-black text-black flex flex-col transition-all duration-300 ${expanded ? "shadow-2xl" : "shadow-none"} ${sidebarWidth}`}>
       {/* Header */}
-      <div className={`relative flex items-center ${expanded ? "justify-start px-4" : "justify-center px-2"} py-4 border-b border-black`}>
+      <div className={`relative flex items-center ${expanded ? "justify-start px-4 bg-white" : "bg-white justify-center px-2"} py-4 border-b border-black`}>
         <span className={`text-center mx-auto font-bold text-base whitespace-nowrap overflow-hidden transition-all ${expanded ? "opacity-100 duration-300" : "opacity-0 duration-200"}`}>
           Development Gateway
         </span>
@@ -62,7 +62,7 @@ const Sidebar = () => {
               <Link
                 href={`/${item.key === "dashboard" ? "" : item.key}`}
                 prefetch
-                className={`relative flex items-center w-full mx-auto py-3 ${expanded ? "pl-4 pr-2" : "pl-0 pr-0"} rounded-md transition-colors duration-200 ${isActive ? "bg-black/5 hover:bg-black/10" : "hover:bg-black/5"}`}
+                className={`relative flex items-center w-full mx-auto py-3 ${expanded ? "pl-4 pr-2" : "pl-0 pr-0"} rounded-md transition-colors duration-200 ${isActive ? "bg-black/5 hover:bg-black/10 border" : "hover:bg-black/5 "}`}
                 aria-current={isActive ? "page" : undefined}
                 onClick={() => {
                   // Only set the section; do not toggle expanded state
