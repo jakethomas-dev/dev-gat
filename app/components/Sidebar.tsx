@@ -32,7 +32,7 @@ const Sidebar = () => {
   const sidebarWidth = expanded ? "w-64" : "w-20";
 
   return (
-    <aside className={`relative h-screen bg-white border-r border-black text-black flex flex-col transition-all duration-300 ${expanded ? "shadow-2xl" : "shadow-none"} ${sidebarWidth}`}>
+  <aside className={`relative h-screen bg-sidebar border-r border-black text-black flex flex-col transition-all duration-300 ${expanded ? "shadow-2xl" : "shadow-none"} ${sidebarWidth}`}>
       {/* Header */}
       <div className={`relative flex items-center ${expanded ? "justify-start px-4" : "justify-center px-2"} py-4 border-b border-black`}>
         <span className={`text-center mx-auto font-bold text-base whitespace-nowrap overflow-hidden transition-all ${expanded ? "opacity-100 duration-300" : "opacity-0 duration-200"}`}>

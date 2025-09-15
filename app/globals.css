@@ -1,2 +1,14 @@
 @import "tailwindcss";
 
+:root {
+	/* Custom sidebar color used via bg-[--color-sidebar] */
+	--color-sidebar: #FAEBD6;
+}
+
+@layer utilities {
+	/* Tailwind utility for sidebar background */
+	.bg-sidebar {
+		background-color: var(--color-sidebar);
+	}
+}
+
