@@ -23,7 +23,7 @@ export const AuthNavbar: React.FC<AuthNavbarProps> = ({
   className = "",
 }) => {
   return (
-  <header className={`sticky top-0 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 h-14 flex items-center px-6 ${className} z-10`}>
+  <header className={`sticky top-0 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 h-14 flex items-center px-6 border-b border-black ${className} z-10`}>
       <div className="flex items-center flex-1 min-w-0">{left || null}</div>
       <div className="flex items-center gap-4">
         {right ? (
@@ -39,7 +39,6 @@ export const AuthNavbar: React.FC<AuthNavbarProps> = ({
           </button>
         )}
       </div>
-      <span aria-hidden="true" className="pointer-events-none absolute left-0 right-0 bottom-[-1px] h-px bg-black" />
     </header>
   );
 };

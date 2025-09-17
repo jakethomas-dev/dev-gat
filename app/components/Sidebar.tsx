@@ -33,7 +33,7 @@ export default function Sidebar() {
 
   return (
     <aside className={`relative h-screen bg-sidebar border-r border-black text-black flex flex-col transition-all duration-300 ${expanded ? "shadow-2xl" : "shadow-none"} ${sidebarWidth}`}>
-      <div className={`relative flex items-center ${expanded ? "justify-start px-4 bg-white" : "bg-white justify-center px-2"} py-4 border-b border-black`}>        
+  <div className={`relative flex items-center ${expanded ? "justify-start px-4 bg-white" : "bg-white justify-center px-2"} h-14 border-b border-black`}>        
         <div className="relative flex items-center w-full justify-center">
           {/* Full logo (shown when expanded) */}
           <span
