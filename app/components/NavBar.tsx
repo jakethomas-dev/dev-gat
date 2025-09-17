@@ -58,13 +58,13 @@ export default function NavBar() {
                             <div className="flex items-center -mr-2 md:hidden">
                                 <button
                                     ref={toggleRef}
-                                    className="inline-flex items-center justify-center p-2 text-black bg-white border border-black rounded-md hover:bg-black/5 transition-colors focus:outline-none"
+                                    className="hover:cursor-pointer hover:opacity-80 inline-flex items-center justify-center p-2 text-black bg-white border border-black rounded-md transition-colors focus:outline-none"
                                     type="button"
                                     aria-expanded={open}
                                     aria-controls="mobile-menu"
                                     onClick={() => setOpen((o) => !o)}
                                 >
-                                    <span className="sr-only">{open ? "Close main menu" : "Open main menu"}</span>
+                                    <span className="sr-only ">{open ? "Close main menu" : "Open main menu"}</span>
                                     {open ? (
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +120,7 @@ export default function NavBar() {
                         <div className="inline-flex rounded-md">
                             <a
                                 href="/signIn"
-                                className="inline-flex items-center px-4 py-2 text-base text-black bg-white border border-black rounded-md hover:bg-black/5 transition-colors"
+                                className="inline-flex items-center px-4 py-2 text-base text-black bg-white border border-black rounded-4xl hover:bg-black/5 transition-colors"
                             >
                                 Sign in
                             </a>
@@ -132,7 +132,7 @@ export default function NavBar() {
                 <div
                     id="mobile-menu"
                     ref={panelRef}
-                    className={`md:hidden overflow-hidden border border-black border-t-0 rounded-b-md bg-white transform transition-all duration-300 origin-top z-40 ${open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+                    className={`md:hidden overflow-hidden border-t-0 rounded-b-md transform transition-all duration-300 origin-top z-40 ${open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
                     aria-hidden={!open}
                 >
                     <ul className="flex flex-col py-4">
@@ -140,7 +140,7 @@ export default function NavBar() {
                             <li key={l.label}>
                                 <a
                                     href={l.href}
-                                    className="block px-6 py-3 text-sm font-medium text-black hover:bg-black/5 transition-colors"
+                                    className="text-center block px-6 py-3 text-sm font-medium text-black hover:bg-black/5 transition-colors rounded-4xl"
                                     onClick={() => setOpen(false)}
                                 >
                                     {l.label}
@@ -150,7 +150,7 @@ export default function NavBar() {
                         <li className="mt-2 px-6">
                             <a
                                 href="/signIn"
-                                className="flex w-full items-center justify-center gap-2 rounded-md border border-black bg-white px-4 py-2 text-sm font-medium text-black hover:bg-black/5 transition-colors"
+                                className="flex w-full items-center justify-center gap-2 rounded-4xl border border-black bg-white px-4 py-2 text-sm font-medium text-black hover:opacity-80 transition-colors"
                                 onClick={() => setOpen(false)}
                             >
                                 Sign in

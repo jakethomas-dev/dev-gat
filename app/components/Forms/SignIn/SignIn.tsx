@@ -157,7 +157,7 @@ export default function SignIn() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-white text-black border py-2 px-6 rounded-md opacity-60 hover:cursor-pointer hover:opacity-100 hover:shadow-lg transition-all duration-300 font-semibold"
+                  className="bg-white text-black border py-2 px-6 rounded-4xl opacity-60 hover:cursor-pointer hover:opacity-100 hover:shadow-lg transition-all duration-300 font-semibold"
                 >
                   {step === steps.length - 1 ? "Sign In" : "Next"}
                 </button>

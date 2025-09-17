@@ -1,11 +1,12 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const steps = [
+// Define the linear steps of the registration wizard (excluding the final review submit pseudo-step)
+const stepDefinitions = [
   {
     label: "Email",
     name: "email",
@@ -14,74 +15,176 @@ const steps = [
     autoComplete: "email",
   },
   {
+    label: "Your Name",
+    name: "fullName",
+    type: "name",
+  },
+  {
     label: "Password",
     name: "password",
     type: "password",
-    placeholder: "Password",
-    autoComplete: "current-password",
+    placeholder: "Password (min 8 chars, 1 number)",
+    autoComplete: "new-password",
+  },
+  {
+    label: "Confirm Password",
+    name: "confirmPassword",
+    type: "password",
+    placeholder: "Re-enter password",
+    autoComplete: "new-password",
+  },
+  {
+    label: "Review",
+    name: "review",
+    type: "review",
   },
 ];
 
-export default function SignIn() {
+export default function Register() {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({
+    email: "",
+    forename: "",
+    surname: "",
+    password: "",
+    confirmPassword: "",
+    // honeypot field - legitimate users never see or fill this
+    company: "",
+  });
   const [error, setError] = useState("");
   const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Math challenge removed per latest requirements
+  const [tooFast, setTooFast] = useState(false);
+  const startTimeRef = useRef<number | null>(null);
   const router = useRouter();
 
-  const currentStep = useMemo(() => steps[step], [step]);
+  // Minimum time (ms) we expect a human to take before reaching final submit, else we flag
+  const MIN_COMPLETION_TIME = 4000; // 4 seconds
+
+  useEffect(() => {
+    if (startTimeRef.current === null) {
+      startTimeRef.current = Date.now();
+    }
+  }, []);
+
+  // Removed humanChallenge effect
+
+  const currentStep = useMemo(() => stepDefinitions[step], [step]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
     setError("");
   };
 
   const validate = (): boolean => {
-    const value = form[currentStep.name as keyof typeof form];
-    if (!value) {
-      setError(`Please enter your ${currentStep.name}.`);
+    // Honeypot: if company field filled, reject silently
+    if (form.company.trim()) {
+      setError("Unexpected error. Please try again.");
       return false;
     }
-    if (currentStep.name === "email" && !/.+@.+\..+/.test(value)) {
-      setError("Please enter a valid email.");
-      return false;
+
+    switch (currentStep.name) {
+      case "email": {
+        const value = form.email.trim();
+        if (!value) return setErrorAndFalse("Please enter your email.");
+        if (!/^\S+@\S+\.\S+$/.test(value)) return setErrorAndFalse("Please enter a valid email.");
+        return true;
+      }
+      case "fullName": {
+        const first = form.forename.trim();
+        const last = form.surname.trim();
+        if (!first || !last) return setErrorAndFalse("Please enter your forename and surname.");
+        if (first.length < 2 || last.length < 2) return setErrorAndFalse("Names must be at least 2 characters.");
+        if (!/^[a-zA-Z'\- ]+$/.test(first) || !/^[a-zA-Z'\- ]+$/.test(last)) return setErrorAndFalse("Names contain invalid characters.");
+        return true;
+      }
+      case "password": {
+        const value = form.password;
+        if (!value) return setErrorAndFalse("Password required.");
+        if (value.length < 8) return setErrorAndFalse("Minimum 8 characters.");
+        if (!/[0-9]/.test(value)) return setErrorAndFalse("Include at least one number.");
+        return true;
+      }
+      case "confirmPassword": {
+        if (form.confirmPassword !== form.password) return setErrorAndFalse("Passwords do not match.");
+        return true;
+      }
+      // humanChallenge removed
+      case "review": {
+        return true;
+      }
+      default:
+        return true;
     }
-    return true;
+  };
+
+  const setErrorAndFalse = (msg: string): false => {
+    setError(msg);
+    return false;
   };
 
   const handleNext = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
-    if (step < steps.length - 1) {
+    // If not at final step yet, move ahead
+    if (step < stepDefinitions.length - 1) {
       setStep((s) => s + 1);
-    } else {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/signin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
-        });
+      return;
+    }
 
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.message || "Invalid credentials");
-        }
+    // Final submit (review step)
+    if (startTimeRef.current && Date.now() - startTimeRef.current < MIN_COMPLETION_TIME) {
+      setTooFast(true);
+      return setError("Please take a moment to review before submitting.");
+    }
 
-        setCompleted(true);
-        setTimeout(() => router.push("/dashboard"), 1500);
-      } catch (err: any) {
-        setError(err.message || "Error signing in");
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    try {
+      const payload = {
+        email: form.email.trim(),
+        name: {
+          forename: form.forename.trim(),
+          surname: form.surname.trim(),
+          full: `${form.forename.trim()} ${form.surname.trim()}`.trim(),
+        },
+        password: form.password,
+        // Potentially include a client fingerprint or timing metadata
+        meta: {
+          tookMs: startTimeRef.current ? Date.now() - startTimeRef.current : undefined,
+        },
+      };
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await safeJson(res);
+        throw new Error(data?.message || "Registration failed");
       }
+      setCompleted(true);
+      setTimeout(() => router.push("/dashboard"), 1800);
+    } catch (err: any) {
+      setError(err.message || "Error registering");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const safeJson = async (res: Response) => {
+    try {
+      return await res.json();
+    } catch {
+      return null;
     }
   };
 
   const handleBack = () => {
     setError("");
+    setTooFast(false);
     setStep((s) => Math.max(0, s - 1));
   };
 
@@ -92,61 +195,116 @@ export default function SignIn() {
     transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as const },
   };
 
+  const totalSteps = stepDefinitions.length;
+  const isFinal = currentStep.name === "review";
+
+  const renderStepContent = () => {
+    if (currentStep.name === "review") {
+      return (
+        <div className="flex flex-col gap-4 text-sm">
+          <div className="font-semibold text-gray-800">Review your details</div>
+          <div className="flex flex-col gap-2 border rounded-md p-4 bg-gray-50">
+            <div><span className="font-medium">Email:</span> {form.email}</div>
+            <div><span className="font-medium">Name:</span> {form.forename} {form.surname}</div>
+            <div><span className="font-medium">Password:</span> {'*'.repeat(form.password.length)}</div>
+          </div>
+          <div className="text-xs text-gray-500">By creating an account you agree to our terms of service.</div>
+        </div>
+      );
+    }
+    if (currentStep.name === "fullName") {
+      return (
+        <div className="flex flex-col gap-4">
+          <label className="block text-sm font-semibold">Your name</label>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="forename" className="text-xs font-medium text-gray-600">Forename</label>
+              <input
+                id="forename"
+                name="forename"
+                type="text"
+                autoComplete="given-name"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:shadow focus:border-black transition duration-150"
+                placeholder="Jane"
+                value={form.forename}
+                onChange={handleChange}
+                autoFocus
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="surname" className="text-xs font-medium text-gray-600">Surname</label>
+              <input
+                id="surname"
+                name="surname"
+                type="text"
+                autoComplete="family-name"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:shadow focus:border-black transition duration-150"
+                placeholder="Doe"
+                value={form.surname}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    // Default input rendering for standard steps
+    return (
+      <div className="flex flex-col gap-4">
+        <label htmlFor={currentStep.name} className="block text-sm font-semibold mb-2">
+          {currentStep.label}
+        </label>
+        <input
+          id={currentStep.name}
+          name={currentStep.name}
+          type={currentStep.type}
+          autoComplete={currentStep.autoComplete}
+          className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:shadow focus:border-black transition duration-150"
+          placeholder={currentStep.placeholder}
+          value={(form as any)[currentStep.name]}
+          onChange={handleChange}
+          required={!["review"].includes(currentStep.name)}
+          autoFocus
+        />
+      </div>
+    );
+  };
+
   return (
     <div className="max-w-lg mx-auto">
-      <h2 className={`text-2xl font-semibold mb-8 text-center`}>
-        Welcome back
-      </h2>
-      <form className="flex flex-col gap-4 min-h-[220px]" onSubmit={handleNext}>
+      <h2 className="text-2xl font-semibold mb-2 text-center">Create your account</h2>
+      <p className="text-xs text-center text-gray-600 mb-6">Step {step + 1} of {totalSteps}</p>
+      <form className="flex flex-col gap-4 min-h-[260px]" onSubmit={handleNext}>
+        {/* Honeypot field (hidden) */}
+        <div className="hidden" aria-hidden="true">
+          <label htmlFor="company">Company</label>
+          <input
+            id="company"
+            name="company"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={form.company}
+            onChange={handleChange}
+          />
+        </div>
         <AnimatePresence mode="wait">
           {loading ? (
-            <motion.div
-              key="loading"
-              {...animationProps}
-              className="flex flex-col items-center justify-center min-h-[180px]"
-            >
+            <motion.div key="loading" {...animationProps} className="flex flex-col items-center justify-center min-h-[200px]">
               <div className="animate-spin h-10 w-10 border-4 border-black border-t-transparent rounded-full mb-4" />
-              <div className="text-gray-700 text-base font-medium">
-                Signing you in…
-              </div>
+              <div className="text-gray-700 text-base font-medium">Creating account…</div>
             </motion.div>
           ) : completed ? (
-            <motion.div
-              key="done"
-              {...animationProps}
-              className="flex flex-col items-center justify-center min-h-[180px]"
-            >
-              <div className="text-green-600 text-xl font-semibold mb-2">
-                Signed in!
-              </div>
+            <motion.div key="done" {...animationProps} className="flex flex-col items-center justify-center min-h-[200px]">
+              <div className="text-green-600 text-xl font-semibold mb-2">Account created!</div>
               <div className="text-gray-600 text-sm">Redirecting…</div>
             </motion.div>
           ) : (
-            <motion.div
-              key={step}
-              {...animationProps}
-              className="flex flex-col gap-4"
-            >
-              <label
-                htmlFor={currentStep.name}
-                className="block text-sm font-semibold mb-2"
-              >
-                {currentStep.label}
-              </label>
-              <input
-                id={currentStep.name}
-                name={currentStep.name}
-                type={currentStep.type}
-                autoComplete={currentStep.autoComplete}
-                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:shadow focus:border-black transition duration-150"
-                placeholder={currentStep.placeholder}
-                value={form[currentStep.name as keyof typeof form]}
-                onChange={handleChange}
-                required
-                autoFocus
-              />
+            <motion.div key={step} {...animationProps} className="flex flex-col gap-4">
+              {renderStepContent()}
               {error && <div className="text-red-500 text-sm">{error}</div>}
-              <div className="flex justify-between mt-4">
+              {tooFast && <div className="text-amber-600 text-xs">Slow down to confirm you're human.</div>}
+              <div className="flex justify-between mt-4 items-center">
                 <button
                   type="button"
                   onClick={handleBack}
@@ -157,9 +315,9 @@ export default function SignIn() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-white text-black border py-2 px-6 rounded-md opacity-60 hover:cursor-pointer hover:opacity-100 hover:shadow-lg transition-all duration-300 font-semibold"
+                  className="bg-white text-black border py-2 px-6 rounded-4xl opacity-60 hover:cursor-pointer hover:opacity-100 hover:shadow-lg transition-all duration-300 font-semibold"
                 >
-                  {step === steps.length - 1 ? "Sign In" : "Next"}
+                  {isFinal ? "Create Account" : "Next"}
                 </button>
               </div>
             </motion.div>
@@ -167,9 +325,9 @@ export default function SignIn() {
         </AnimatePresence>
       </form>
       <p className="text-xs text-center text-gray-600 mt-8">
-        Don&apos;t have an account?{" "}
-        <Link href="/register" className="text-blue-600 hover:underline">
-          Sign up
+        Already have an account?{" "}
+        <Link href="/signIn" className="text-blue-600 hover:underline">
+          Sign in
         </Link>
       </p>
     </div>
