@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { LayoutDashboard, SquarePen, Settings, ArrowLeft, ArrowRight, type LucideIcon } from "lucide-react";
 import { useSection } from "./SectionProvider";
 
@@ -32,10 +33,35 @@ export default function Sidebar() {
 
   return (
     <aside className={`relative h-screen bg-sidebar border-r border-black text-black flex flex-col transition-all duration-300 ${expanded ? "shadow-2xl" : "shadow-none"} ${sidebarWidth}`}>
-      <div className={`relative flex items-center ${expanded ? "justify-start px-4 bg-white" : "bg-white justify-center px-2"} py-4 border-b border-black`}>
-        <span className={`text-center mx-auto font-bold text-base whitespace-nowrap overflow-hidden transition-all ${expanded ? "opacity-100 duration-300" : "opacity-0 duration-200"}`}>
-          Development Gateway
-        </span>
+      <div className={`relative flex items-center ${expanded ? "justify-start px-4 bg-white" : "bg-white justify-center px-2"} py-4 border-b border-black`}>        
+        <div className="relative flex items-center w-full justify-center">
+          {/* Full logo (shown when expanded) */}
+          <span
+            className={`transition-all origin-left flex items-center ${expanded ? "opacity-100 scale-100" : "opacity-0 -translate-x-2 scale-95"}`}
+            aria-hidden={!expanded}
+          >
+            <Image
+              src="/dg_full_logo.svg"
+              width={581}
+              height={156}
+              priority
+              alt="Development Gateway full logo"
+              className="h-6 w-auto select-none"
+            />
+          </span>
+          {/* Compact icon (shown when collapsed) */}
+            <span
+              className={`absolute left-1/2 -translate-x-1/2 transition-all ${expanded ? "opacity-0 scale-75 pointer-events-none" : "opacity-100 scale-100"}`}
+            >
+              <Image
+                src="/dg_icon_logo.svg"
+                width={24}
+                height={24}
+                priority
+                alt="Development Gateway icon logo"
+              />
+            </span>
+        </div>
       </div>
 
       <button

@@ -44,11 +44,11 @@ export default function NavBar() {
                     {/* Left / Brand + Mobile Toggle */}
                     <div className="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
                         <div className="flex items-center justify-between w-full md:w-auto">
-                            <a href="#" className="flex items-center gap-2">
+                            <a href="/" className="flex items-center gap-2">
                                 <span className="sr-only">Development Gateway</span>
                                 <img
                                     className="h-8 w-auto sm:h-10"
-                                    src="https://www.svgrepo.com/show/448244/pack.svg"
+                                    src="dg_full_logo.svg"
                                     loading="lazy"
                                     width="202"
                                     height="40"
