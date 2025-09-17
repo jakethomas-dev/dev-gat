@@ -1,9 +1,12 @@
 import SignIn from "../components/Forms/SignIn/SignIn";
+import NavBar from "../components/NavBar";
 
 export default function SignInPage() {
   return (
-    <section className="max-w-md mx-auto py-32">
+    <><NavBar /><section className="max-w-md mx-auto pt-32">
+      
       <SignIn />
-    </section>
+    </section></>
+    
   );
 }

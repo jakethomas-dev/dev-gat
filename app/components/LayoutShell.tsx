@@ -12,12 +12,8 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   const isPublic = pathname === "/" || firstSeg === "signIn" || firstSeg === "register";
 
   if (isPublic) {
-    // Minimal shell, no sidebar/title
-    return (
-      <Container>
-        {children}
-      </Container>
-    );
+    // No Container wrapper so content (e.g., a full-width navbar / hero) can span the viewport
+    return <>{children}</>;
   }
 
   return (
