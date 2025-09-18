@@ -1,0 +1,140 @@
+[
+  {
+    "value": "householder",
+    "label": "Householder Planning Consent",
+    "description": "For extensions, alterations or improvements to residential properties"
+  },
+  {
+    "value": "full",
+    "label": "Full Planning Consent",
+    "description": "For detailed planning permission with all matters specified"
+  },
+  {
+    "value": "outline",
+    "label": "Outline Planning Consent",
+    "description": "For planning permission in principle with some matters reserved"
+  },
+  {
+    "value": "reserved_matters",
+    "label": "Reserved Matters",
+    "description": "For approval of details following outline planning permission"
+  },
+  {
+    "value": "listed_building",
+    "label": "Listed Building Consent",
+    "description": "For alterations to listed buildings"
+  },
+  {
+    "value": "advertisement",
+    "label": "Advertisement Consent",
+    "description": "For displaying advertisements and signs"
+  },
+  {
+    "value": "lawful_development_certificate",
+    "label": "Lawful Development Certificate (LDC)",
+    "description": "To confirm whether development is lawful"
+  },
+  {
+    "value": "prior_approval",
+    "label": "Prior Approval",
+    "description": "For permitted development requiring prior approval"
+  },
+  {
+    "value": "remove_vary_conditions",
+    "label": "Removal/Variation of Conditions",
+    "description": "To remove or modify planning conditions"
+  },
+  {
+    "value": "discharge_conditions",
+    "label": "Approval (Discharge) of Conditions",
+    "description": "To discharge planning conditions"
+  },
+  {
+    "value": "tree_preservation_order",
+    "label": "Consent under Tree Preservation Orders",
+    "description": "For work on protected trees"
+  },
+  {
+    "value": "non_material_amendment",
+    "label": "Non-material Amendment",
+    "description": "For minor changes to existing planning permission"
+  },
+  {
+    "value": "permission_in_principle",
+    "label": "Application for Permission in Principle",
+    "application_method": "paper_form",
+    "description": "For permission in principle on minor development"
+  },
+  {
+    "value": "certificate_lawfulness_listed_building",
+    "label": "Certificate of Lawfulness of Proposed Works to Listed Building",
+    "application_method": "paper_form",
+    "description": "To confirm lawfulness of proposed listed building works"
+  },
+  {
+    "value": "oil_gas_extraction",
+    "label": "Planning Application for Onshore Oil and Gas Extraction",
+    "application_method": "paper_form",
+    "description": "For onshore extraction of oil and gas"
+  },
+  {
+    "value": "prior_approval_campsite_flood_zone",
+    "label": "Prior Approval for Temporary Recreational Campsite in Flood Zone",
+    "application_method": "paper_form",
+    "description": "For temporary campsites in Flood Zone 2 or 3"
+  },
+  {
+    "value": "hybrid_application",
+    "label": "Hybrid Application",
+    "application_method": "local_authority_discretion",
+    "description": "Combined outline and full planning permission for different parts of same site"
+  },
+  {
+    "value": "modify_construction_hours",
+    "label": "Modification of Construction Working Hours Conditions",
+    "application_method": "local_authority_direct",
+    "description": "To modify conditions relating to construction working hours"
+  },
+  {
+    "value": "environmental_approval_extension",
+    "label": "Additional Environmental Approval to Extend Duration",
+    "application_method": "local_authority_direct",
+    "description": "To extend the duration of a planning permission with environmental approval"
+  },
+  {
+    "value": "mineral_extraction",
+    "label": "Planning Permission for Mineral Extraction",
+    "application_method": "local_authority_direct",
+    "description": "For mineral extraction or associated development"
+  },
+  {
+    "value": "section_106_modification",
+    "label": "Modification or Discharge of Section 106 Planning Obligation",
+    "application_method": "local_authority_direct",
+    "description": "To modify or discharge Section 106 agreements"
+  },
+  {
+    "value": "prior_approval_toll_road",
+    "label": "Prior Approval for Toll Road Facilities",
+    "application_method": "local_authority_direct",
+    "description": "For toll road facilities (Part 9 - Class D)"
+  },
+  {
+    "value": "prior_approval_mining_exploration",
+    "label": "Prior Approval for Mining and Mineral Exploration",
+    "application_method": "local_authority_direct",
+    "description": "For mining and mineral exploration (Part 17 – Class B, C, D, F, G)"
+  },
+  {
+    "value": "prior_approval_miscellaneous_development",
+    "label": "Prior Approval for Miscellaneous Development",
+    "application_method": "local_authority_direct",
+    "description": "For miscellaneous development (Part 18 - Class A)"
+  },
+  {
+    "value": "certificate_appropriate_alternative_development",
+    "label": "Certificate of Appropriate Alternative Development",
+    "application_method": "local_authority_direct",
+    "description": "For certificates of appropriate alternative development"
+  }
+]
