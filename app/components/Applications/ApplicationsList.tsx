@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { Pen, Trash, RefreshCw } from "lucide-react";
+import { Pen, Trash, RefreshCw, Plus } from "lucide-react";
 import applicationTypes from "@/app/data/applicationTypes.json";
 import { useRouter } from "next/navigation";
 
@@ -71,6 +71,19 @@ export default function ApplicationsList() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-800">Applications</h2>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setLoading(true);
+              fetchApplications();
+            }}
+            disabled={loading}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Create new application"
+          >
+            <Plus className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+            {loading ? "Creating..." : "Create"}
+          </button>
           <button
             type="button"
             onClick={() => {
