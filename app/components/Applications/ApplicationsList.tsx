@@ -78,7 +78,7 @@ export default function ApplicationsList() {
               fetchApplications();
             }}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:cursor-pointer hover:shadow-lg hover:border-black hover:text-black disabled:opacity-50 disabled:cursor-not-allowed transition all duration-300"
             aria-label="Create new application"
           >
             <Plus className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
@@ -91,7 +91,7 @@ export default function ApplicationsList() {
               fetchApplications();
             }}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:cursor-pointer hover:shadow-lg hover:border-black hover:text-black disabled:opacity-50 disabled:cursor-not-allowed transition all duration-300"
             aria-label="Refresh applications"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />

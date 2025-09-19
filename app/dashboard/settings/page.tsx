@@ -1,12 +1,7 @@
-import Card from "../../components/Card";
+"use client"
+import dynamic from "next/dynamic";
+const SettingsPanel = dynamic(() => import("@/app/components/Settings/SettingsPanel"), { ssr: false });
 
 export default function SettingsPage() {
-  return (
-  <section className="max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card title="Profile" content="Update your profile and preferences." />
-        <Card title="Security" content="Manage security settings." />
-      </div>
-    </section>
-  );
+  return <SettingsPanel />;
 }
