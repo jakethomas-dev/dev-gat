@@ -58,6 +58,7 @@ export default function SignIn() {
   return (
     <div className="max-w-lg mx-auto">
       <h2 className="text-2xl font-semibold mb-8 text-center">Welcome back</h2>
+      <p className="text-center text-xs text-black/70 mb-8">Your place for planning & development</p>
       <StepWizard
         wizard={wizard}
         onNextLabel={(isLast) => (isLast ? "Sign In" : "Next")}
