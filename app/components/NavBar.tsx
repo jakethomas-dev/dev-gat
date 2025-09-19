@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function NavBar() {
     const [open, setOpen] = useState(false);
@@ -45,7 +46,7 @@ export default function NavBar() {
                     {/* Left / Brand + Mobile Toggle */}
                     <div className="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
                         <div className="flex items-center justify-between w-full md:w-auto">
-                            <a href="/" className="flex items-center gap-2">
+                                                        <Link href="/" className="flex items-center gap-2">
                                 <span className="sr-only">Development Gateway</span>
                                 <Image
   className="h-8 w-auto sm:h-10"
@@ -55,7 +56,7 @@ export default function NavBar() {
   alt="Development Gateway Logo"
   priority={false}
 />
-                            </a>
+                                                        </Link>
                             <div className="flex items-center -mr-2 md:hidden">
                                 <button
                                     ref={toggleRef}
@@ -106,12 +107,12 @@ export default function NavBar() {
                     <ul className="hidden md:flex md:space-x-10 list-none">
                         {navLinks.map((l) => (
                             <li key={l.label}>
-                                <a
+                                <Link
                                     href={l.href}
                                     className="text-base font-normal text-black/70 hover:text-black transition-colors"
                                 >
                                     {l.label}
-                                </a>
+                                </Link>
                             </li>
                         ))}
                     </ul>
@@ -119,12 +120,12 @@ export default function NavBar() {
                         {/* Desktop CTA */}
                     <div className="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
                         <div className="inline-flex rounded-md">
-                            <a
+                            <Link
                                 href="/signIn"
                                 className="inline-flex items-center px-4 py-2 text-base text-black bg-white border border-black rounded-4xl hover:bg-black/5 transition-colors"
                             >
                                 Sign in
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </nav>
@@ -139,23 +140,23 @@ export default function NavBar() {
                     <ul className="flex flex-col py-4">
                         {navLinks.map((l) => (
                             <li key={l.label}>
-                                <a
+                                <Link
                                     href={l.href}
                                     className="text-center block px-6 py-3 text-sm font-medium text-black hover:bg-black/5 transition-colors rounded-4xl"
                                     onClick={() => setOpen(false)}
                                 >
                                     {l.label}
-                                </a>
+                                </Link>
                             </li>
                         ))}
                         <li className="mt-2 px-6">
-                            <a
+                            <Link
                                 href="/signIn"
                                 className="flex w-full items-center justify-center gap-2 rounded-4xl border border-black bg-white px-4 py-2 text-sm font-medium text-black hover:opacity-80 transition-colors"
                                 onClick={() => setOpen(false)}
                             >
                                 Sign in
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>

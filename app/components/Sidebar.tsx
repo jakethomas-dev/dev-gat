@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { LayoutDashboard, SquarePen, Settings, ArrowLeft, ArrowRight, type LucideIcon } from "lucide-react";
 import { useSection } from "./SectionProvider";
+import { useRouter } from "next/navigation";
 
 type MenuItem = { icon: LucideIcon; label: string; key: string; href: string };
 
@@ -15,6 +16,7 @@ const menuItems: MenuItem[] = [
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
+  const router = useRouter();
   const EXPAND_KEY = "dg.sidebar-expanded";
   useEffect(() => {
     try {
@@ -30,6 +32,40 @@ export default function Sidebar() {
 
   const { section, setSection } = useSection();
   const sidebarWidth = expanded ? "w-64" : "w-20";
+
+  // Prefetch common sidebar routes on idle to speed up first navigation
+  useEffect(() => {
+    const routes = ["/dashboard", "/dashboard/applications", "/dashboard/settings"];
+    let idleId: number | null = null;
+    let timeoutId: number | null = null;
+
+    const prefetchAll = () => routes.forEach((r) => router.prefetch(r));
+
+    type ExtendedWindow = Window & {
+      requestIdleCallback?: (
+        callback: (deadline: { timeRemaining: () => number; didTimeout: boolean }) => void,
+        opts?: { timeout?: number }
+      ) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    const win = window as ExtendedWindow;
+
+    if (typeof win.requestIdleCallback === "function") {
+      idleId = win.requestIdleCallback(() => prefetchAll(), { timeout: 1500 });
+    } else {
+      timeoutId = window.setTimeout(prefetchAll, 300);
+    }
+
+    return () => {
+      if (idleId !== null && typeof win.cancelIdleCallback === "function") {
+        win.cancelIdleCallback(idleId);
+      }
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [router]);
 
   return (
     <aside className={`relative h-screen bg-sidebar border-r border-black text-black flex flex-col transition-all duration-300 ${expanded ? "shadow-2xl" : "shadow-none"} ${sidebarWidth}`}>
@@ -86,6 +122,7 @@ export default function Sidebar() {
                   className={`relative flex items-center w-full mx-auto py-3 ${expanded ? "pl-4 pr-2" : "pl-0 pr-0"} rounded-md transition-colors duration-200 ${isActive ? "bg-black/5 hover:bg-black/10 border" : "hover:bg-black/5 "}`}
                   aria-current={isActive ? "page" : undefined}
                   onClick={() => setSection(item.key)}
+                  onMouseEnter={() => router.prefetch(item.href)}
                 >
                   <span
                     className={`absolute top-1/2 -translate-y-1/2 transition-all duration-300 ${expanded ? "left-4 translate-x-0" : "left-1/2 -translate-x-1/2"}`}
