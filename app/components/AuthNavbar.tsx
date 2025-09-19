@@ -38,8 +38,8 @@ export const AuthNavbar: React.FC<AuthNavbarProps> = ({
       if (t && (btnRef.current?.contains(t) || menuRef.current?.contains(t))) return;
       close();
     };
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
+    document.addEventListener("pointerdown", onDocClick);
+    return () => document.removeEventListener("pointerdown", onDocClick);
   }, [open]);
 
   // Close on Escape

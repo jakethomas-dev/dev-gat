@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 export default function NavBar() {
     const [open, setOpen] = useState(false);
@@ -46,14 +47,14 @@ export default function NavBar() {
                         <div className="flex items-center justify-between w-full md:w-auto">
                             <a href="/" className="flex items-center gap-2">
                                 <span className="sr-only">Development Gateway</span>
-                                <img
-                                    className="h-8 w-auto sm:h-10"
-                                    src="dg_full_logo.svg"
-                                    loading="lazy"
-                                    width="202"
-                                    height="40"
-                                    alt="Development Gateway Logo"
-                                />
+                                <Image
+  className="h-8 w-auto sm:h-10"
+  src="/dg_full_logo.svg"
+  width={202}
+  height={40}
+  alt="Development Gateway Logo"
+  priority={false}
+/>
                             </a>
                             <div className="flex items-center -mr-2 md:hidden">
                                 <button

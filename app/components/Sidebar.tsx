@@ -83,7 +83,6 @@ export default function Sidebar() {
               <li key={idx} className="mx-auto w-full">
                 <Link
                   href={item.href}
-                  prefetch
                   className={`relative flex items-center w-full mx-auto py-3 ${expanded ? "pl-4 pr-2" : "pl-0 pr-0"} rounded-md transition-colors duration-200 ${isActive ? "bg-black/5 hover:bg-black/10 border" : "hover:bg-black/5 "}`}
                   aria-current={isActive ? "page" : undefined}
                   onClick={() => setSection(item.key)}

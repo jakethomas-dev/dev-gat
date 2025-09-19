@@ -19,7 +19,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const parts = (pathname || "/").split("/").filter(Boolean);
   const firstSeg = parts[0];
-  const initial = (firstSeg === "dashboard" ? (parts[1] || "dashboard") : (firstSeg || "dashboard")).toLowerCase() as any;
+  const initial = (firstSeg === "dashboard" ? (parts[1] || "dashboard") : (firstSeg || "dashboard")).toLowerCase();
   return (
     <SectionProvider initial={initial}>
       <SectionSync />
