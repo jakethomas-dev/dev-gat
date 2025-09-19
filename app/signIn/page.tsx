@@ -11,7 +11,7 @@ export default function SignInPage() {
             </div>
           </div>
           <div className="hidden md:block">
-            <div className="w-full h-full min-h-[360px] rounded-md bg-sidebar" aria-hidden="true" />
+            <div className="w-full h-full min-h-[360px] rounded-md bg-sidebar border" aria-hidden="true" />
           </div>
         </div>
       </section>
