@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, SquarePen, Settings, ArrowLeft, ArrowRight, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, SquarePen, Settings, ArrowLeft, ArrowRight, type LucideIcon, Plus, PlusIcon } from "lucide-react";
 import { useSection } from "./SectionProvider";
 import { useRouter } from "next/navigation";
 
@@ -112,6 +112,13 @@ export default function Sidebar() {
 
       <nav className="flex-1 px-2 py-4">
         <ul className="space-y-2">
+          <button
+            type="button"
+            className="mx-auto w-full bg-black text-white text-sm px-6 py-2 rounded-lg hover:cursor-pointer hover:shadow-lg transition-all duration-150 flex items-center justify-between"
+          >
+            <span className="text-left">Create Application</span>
+            <PlusIcon className="w-4 h-4" />
+          </button>
           {menuItems.map((item, idx) => {
             const Icon = item.icon;
             const isActive = section === item.key;
