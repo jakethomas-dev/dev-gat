@@ -114,16 +114,28 @@ export default function Sidebar() {
         <ul className="space-y-2">
           <button
             type="button"
-            className="mx-auto w-full bg-black text-white text-sm px-6 py-2 rounded-lg hover:cursor-pointer hover:shadow-lg transition-all duration-150 flex items-center justify-between"
+            className={`relative mx-auto w-full bg-white text-black border text-sm rounded-lg hover:cursor-pointer hover:shadow-lg transition-all duration-300 flex items-center ${
+              expanded ? "justify-start pl-4 pr-8 py-2" : "justify-center px-0 py-2"
+            }`}
           >
-            <span className="text-left">Create Application</span>
-            <PlusIcon className="w-4 h-4" />
+            <span
+              className={`text-left font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ${
+                expanded ? "opacity-100 max-w-[200px]" : "opacity-0 max-w-0"
+              }`}
+            >
+              Create Application
+            </span>
+            <PlusIcon
+              className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 transition-all duration-300 ${
+                expanded ? "right-3 translate-x-0" : "left-1/2 -translate-x-1/2"
+              }`}
+            />
           </button>
-          {menuItems.map((item, idx) => {
+          <div className="bg-black/5 rounded-md p-2">{menuItems.map((item, idx) => {
             const Icon = item.icon;
             const isActive = section === item.key;
             return (
-              <li key={idx} className="mx-auto w-full">
+              <li key={idx} className="mx-auto w-full mb-2">
                 <Link
                   href={item.href}
                   className={`relative flex items-center w-full mx-auto py-3 ${expanded ? "pl-4 pr-2" : "pl-0 pr-0"} rounded-md transition-colors duration-200 ${isActive ? "bg-black/5 hover:bg-black/10 border" : "hover:bg-black/5 "}`}
@@ -144,7 +156,8 @@ export default function Sidebar() {
                 </Link>
               </li>
             );
-          })}
+          })}</div>
+          
         </ul>
       </nav>
     </aside>
