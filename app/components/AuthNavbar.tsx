@@ -1,7 +1,9 @@
 "use client";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronRight, LogOut, Settings as SettingsIcon, User as UserIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSession } from "@/app/components/hooks/useSession";
 
 interface AuthNavbarProps {
   left?: ReactNode;              // Optional left content (breadcrumbs, title, etc.)
@@ -26,6 +28,9 @@ export const AuthNavbar: React.FC<AuthNavbarProps> = ({
   const [open, setOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+  const [signingOut, setSigningOut] = useState(false);
+  const { user, loading: sessionLoading } = useSession();
 
   const toggle = () => setOpen((v) => !v);
   const close = () => setOpen(false);
@@ -51,6 +56,17 @@ export const AuthNavbar: React.FC<AuthNavbarProps> = ({
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
+
+  const handleSignOut = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await fetch('/api/signout', { method: 'POST' });
+    } catch {/* ignore network errors */}
+    close();
+    router.push('/signIn');
+    setSigningOut(false);
+  };
 
   return (
   <header className={`sticky top-0 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 h-14 flex items-center px-6 border-b border-black ${className} z-10`}>
@@ -95,22 +111,24 @@ export const AuthNavbar: React.FC<AuthNavbarProps> = ({
                     <div className="rounded-md border border-black bg-white shadow-xl overflow-hidden">
                       {/* Header */}
                       <div className="px-3 py-2 border-b border-black/10">
-                        <p className="text-sm font-semibold text-black truncate">Signed in</p>
-                        <p className="text-xs text-black/60 truncate">you@example.com</p>
+                        {sessionLoading ? (
+                          <div className="animate-pulse" aria-busy="true" aria-label="Loading user session">
+                            <div className="h-3 w-28 rounded bg-black/10 mb-2" />
+                            <div className="h-2 w-40 rounded bg-black/5" />
+                          </div>
+                        ) : (
+                          <>
+                            <p className="text-sm font-semibold text-black truncate">
+                              {user ? ((user.forename || user.surname) ? `${user.forename || ''} ${user.surname || ''}`.trim() : user.email) : 'Signed in'}
+                            </p>
+                            <p className="text-xs text-black/60 truncate">{user?.email || ''}</p>
+                          </>
+                        )}
                       </div>
 
                       {/* Items */}
                       <div className="py-1">
-                        <button
-                          role="menuitem"
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-black/5 focus:bg-black/5 focus:outline-none flex items-center justify-between"
-                          onClick={() => close()}
-                        >
-                          <span className="inline-flex items-center gap-2">
-                            <UserIcon className="w-4 h-4" /> Profile
-                          </span>
-                          <ChevronRight className="w-4 h-4 opacity-50" />
-                        </button>
+                        
                         <button
                           role="menuitem"
                           className="w-full px-3 py-2 text-left text-sm hover:bg-black/5 focus:bg-black/5 focus:outline-none flex items-center justify-between"
@@ -127,10 +145,11 @@ export const AuthNavbar: React.FC<AuthNavbarProps> = ({
                       <div className="border-t border-black/10">
                         <button
                           role="menuitem"
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-black/5 focus:bg-black/5 focus:outline-none flex items-center gap-2 text-red-600"
-                          onClick={() => close()}
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-black/5 focus:bg-black/5 focus:outline-none flex items-center gap-2 text-red-600 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                          onClick={handleSignOut}
+                          disabled={signingOut}
                         >
-                          <LogOut className="w-4 h-4" /> Sign out
+                          <LogOut className={`w-4 h-4 ${signingOut ? 'animate-pulse' : ''}`} /> {signingOut ? 'Signing out…' : 'Sign out'}
                         </button>
                       </div>
                     </div>

@@ -148,11 +148,8 @@ export default function Register() {
     onSubmit: async (form) => {
       const payload = {
         email: form.email.trim(),
-        name: {
-          forename: form.forename.trim(),
-          surname: form.surname.trim(),
-          full: `${form.forename.trim()} ${form.surname.trim()}`.trim(),
-        },
+        forename: form.forename.trim(),
+        surname: form.surname.trim(),
         password: form.password,
       };
       const res = await fetch("/api/register", {

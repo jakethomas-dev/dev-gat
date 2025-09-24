@@ -5,7 +5,7 @@ import applicationTypes from "@/app/data/applicationTypes.json";
 import { useRouter } from "next/navigation";
 
 interface AppRecord {
-  _id: string;
+  id: string;
   applicationName: string;
   siteLocation: string;
   applicationType: string;
@@ -26,12 +26,17 @@ export default function ApplicationsList() {
   const router = useRouter();
 
   const fetchApplications = useCallback(() => {
-    // fetch("/api/applications/list")
-    //   .then((res) => res.json())
-    //   .then((data: AppRecord[]) => setApps(data))
-    //   .catch(console.error)
-    //   .finally(() => setLoading(false));
-    setLoading(false);
+    fetch("/api/applications", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load applications");
+        return res.json();
+      })
+      .then((data: AppRecord[]) => setApps(data))
+      .catch((e) => {
+        console.error(e);
+        setApps([]);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // fetch on initial mount
@@ -57,12 +62,12 @@ export default function ApplicationsList() {
   );
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/applications/${id}`, { method: "DELETE" });
-    setApps(apps.filter((a) => a._id !== id));
+  await fetch(`/api/applications/${id}`, { method: "DELETE" });
+  setApps(apps.filter((a) => a.id !== id));
   };
 
   const handleEdit = (id: string) => {
-    router.push(`/dashboard/applications/view-full/${id}`);
+  router.push(`/dashboard/applications/view-full/${id}`);
   };
 
   return (
@@ -119,7 +124,7 @@ export default function ApplicationsList() {
         ) : (
           filtered.map((app) => (
             <div
-              key={app._id}
+              key={app.id}
               className="text-sm flex flex-col md:flex-row md:items-center md:gap-0 border border-gray-200 rounded-xl p-4 bg-white hover:border-gray-400 hover:shadow-lg transition-all duration-300 ease-in-out min-h-[64px] text-center"
             >
               <div className="flex-1 md:w-1/6">{app.applicationName}</div>
@@ -146,13 +151,13 @@ export default function ApplicationsList() {
               </div>
               <div className="flex gap-2 justify-center md:w-1/6">
                 <button
-                  onClick={() => handleEdit(app._id)}
+                  onClick={() => handleEdit(app.id)}
                   className="px-3 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 text-xs font-semibold"
                 >
                   <Pen className="inline" size={18} />
                 </button>
                 <button
-                  onClick={() => handleDelete(app._id)}
+                  onClick={() => handleDelete(app.id)}
                   className="px-3 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 text-xs font-semibold"
                 >
                   <Trash className="inline" size={18} />
