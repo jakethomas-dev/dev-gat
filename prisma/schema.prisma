@@ -36,6 +36,13 @@ model Application {
   userId          String
   user            User     @relation(fields: [userId], references: [id])
 
+  // Progress tracking fields (all optional / default to empty so legacy rows still work)
+  siteBoundary        Json?
+  actionPlan          Json?
+  applicationQuestions Boolean[] @default([])
+  plansAndDocuments   Json?
+  progressWeights     Json? // { siteBoundary: number, actionPlan: number, applicationQuestions: number, plansAndDocuments: number }
+
   @@index([applicationName])
   @@index([statusOf])
   @@index([createdAt])

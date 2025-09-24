@@ -12,6 +12,7 @@ interface AppRecord {
   proposal: string;
   createdAt: string;
   statusOf: string;
+  progressPercent?: number;
 }
 
 export default function ApplicationsList() {
@@ -78,16 +79,12 @@ export default function ApplicationsList() {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => {
-              setLoading(true);
-              fetchApplications();
-            }}
-            disabled={loading}
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:cursor-pointer hover:shadow-lg hover:border-black hover:text-black disabled:opacity-50 disabled:cursor-not-allowed transition all duration-300"
+            onClick={() => router.push("/dashboard/applications/create")}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:cursor-pointer hover:shadow-lg hover:border-black hover:text-black transition all duration-300"
             aria-label="Create new application"
           >
-            <Plus className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-            {loading ? "Creating..." : "Create"}
+            <Plus className="h-4 w-4" />
+            Create
           </button>
           <button
             type="button"
@@ -109,7 +106,7 @@ export default function ApplicationsList() {
         <div>Location</div>
         <div>Type</div>
         <div>Date Created</div>
-        <div>Status</div>
+  <div>Progress</div>
         <div className="text-center">Actions</div>
       </div>
       <div className="flex flex-col gap-2 mt-2">
@@ -137,17 +134,12 @@ export default function ApplicationsList() {
                 {new Date(app.createdAt).toLocaleDateString()}
               </div>
               <div className="flex-1 md:w-1/6">
-                <span
-                  className={`px-2 py-1 rounded text-xs font-semibold ${
-                    app.statusOf === "Submitted"
-                      ? "bg-green-100 text-green-700"
-                      : app.statusOf === "Rejected"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}
-                >
-                  {app.statusOf}
-                </span>
+                <div className="w-full flex items-center justify-center">
+                  <div className="relative w-24 h-2 bg-gray-200 rounded-full overflow-hidden" aria-label="Progress bar">
+                    <div className="h-full bg-gradient-to-r from-blue-400 to-blue-600" style={{ width: `${app.progressPercent ?? 0}%` }} />
+                  </div>
+                  <span className="ml-2 text-xs font-semibold tabular-nums">{app.progressPercent ?? 0}%</span>
+                </div>
               </div>
               <div className="flex gap-2 justify-center md:w-1/6">
                 <button

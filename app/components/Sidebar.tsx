@@ -101,7 +101,7 @@ export default function Sidebar() {
       </div>
 
       <button
-        className="absolute right-0 top-4 translate-x-1/2 z-20 bg-white border border-black rounded-full w-8 h-8 flex items-center justify-center text-black hover:cursor-pointer hover:shadow-lg"
+        className="absolute -right-4 top-1/2 -translate-y-1/2 z-30 bg-white border border-black shadow rounded-full w-8 h-8 flex items-center justify-center text-black hover:cursor-pointer hover:shadow-lg"
         type="button"
         aria-expanded={expanded}
         aria-label={expanded ? "Collapse sidebar" : "Expand sidebar"}
