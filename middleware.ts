@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { readTokenFromRequest, verifyAuthToken, readRefreshTokenFromRequest, buildSessionCookie } from '@/lib/auth/jwt';
-import { rotateRefreshToken } from '@/lib/auth/session';
+import { rotateSessionToken } from '@/lib/auth/session';
 import { prisma } from '@/lib/db';
 import { signAuthToken } from '@/lib/auth/jwt';
 
@@ -26,9 +26,9 @@ export async function middleware(req: NextRequest) {
   const refresh = readRefreshTokenFromRequest(req as unknown as Request);
   if (refresh) {
     try {
-      const rotated = await rotateRefreshToken(refresh);
+  const rotated = await rotateSessionToken(refresh, { ip: req.headers.get('x-forwarded-for'), userAgent: req.headers.get('user-agent') });
       if (rotated) {
-        const tokenRecord = await prisma.refreshToken.findUnique({ where: { id: rotated.id } });
+  const tokenRecord = await prisma.session.findUnique({ where: { id: rotated.id } });
         if (tokenRecord) {
           const user = await prisma.user.findUnique({ where: { id: tokenRecord.userId } });
           if (user) {

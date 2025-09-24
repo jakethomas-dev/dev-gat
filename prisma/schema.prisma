@@ -15,10 +15,13 @@ model User {
   password     String
   forename     String
   surname      String
+  firstLogin   Boolean        @default(true)
+  deletedAt    DateTime?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   applications Application[]
-  RefreshToken RefreshToken[]
+  sessions     Session[]
+  AuditLog     AuditLog[]
 }
 
 model Application {
@@ -38,8 +41,8 @@ model Application {
   @@index([createdAt])
 }
 
-// Refresh tokens to support sliding sessions
-model RefreshToken {
+// Session (long-lived) tokens to support sliding auth (previously RefreshToken)
+model Session {
   id           String    @id @default(cuid())
   userId       String
   user         User      @relation(fields: [userId], references: [id])
@@ -48,7 +51,25 @@ model RefreshToken {
   createdAt    DateTime  @default(now())
   revokedAt    DateTime?
   replacedById String?
+  ip           String?
+  userAgent    String?
+  lastUsedAt   DateTime? // updated when rotated / accessed
 
   @@index([userId])
   @@index([expiresAt])
+  @@index([revokedAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  ip        String?
+  userAgent String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([action])
 }

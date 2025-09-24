@@ -22,6 +22,7 @@ export async function PATCH(req: Request) {
   if (!email || typeof email !== 'string' || !email.includes('@')) return NextResponse.json({ message: 'Invalid email' }, { status: 400 });
   const exists = await prisma.user.findUnique({ where: { email } });
   if (exists && exists.id !== user.id) return NextResponse.json({ message: 'Email already in use' }, { status: 409 });
-  const updated = await prisma.user.update({ where: { id: user.id }, data: { email }, select: { id: true, email: true, forename: true, surname: true } });
+  const updated = await prisma.user.update({ where: { id: user.id }, data: { email, firstLogin: false }, select: { id: true, email: true, forename: true, surname: true } });
+  await prisma.auditLog.create({ data: { userId: user.id, action: 'user.update_email', metadata: { newEmail: email } } });
   return NextResponse.json({ ok: true, user: updated });
 }

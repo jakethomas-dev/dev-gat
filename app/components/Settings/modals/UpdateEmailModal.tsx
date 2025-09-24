@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useSession } from "@/app/components/hooks/useSession";
 import Modal from "@/app/components/ui/Modal";
 
 interface Props {
@@ -11,6 +12,7 @@ const UpdateEmailModal: React.FC<Props> = ({ open, onClose }) => {
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { refresh, updateUser } = useSession();
   const handleSave = async () => {
     if (saving) return;
     setSaving(true); setError(null);
@@ -20,7 +22,11 @@ const UpdateEmailModal: React.FC<Props> = ({ open, onClose }) => {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.message || 'Failed to update email');
       }
-      onClose();
+  // optimistic immediate update
+  updateUser({ email });
+  onClose();
+  // ensure server state synced
+  refresh();
     } catch (e: any) {
       setError(e.message);
     } finally {

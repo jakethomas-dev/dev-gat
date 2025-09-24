@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 
-interface SessionUser {
+export interface SessionUser {
   id: string;
   email: string;
   forename?: string;
@@ -57,5 +57,10 @@ export function useSession(options: UseSessionOptions = {}) {
     }
   }, [refreshIntervalMs, load]);
 
-  return { user, loading, error, refresh: load, signOut, isAuthenticated: !!user };
+  // optimistic update helper
+  const updateUser = useCallback((partial: Partial<SessionUser>) => {
+    setUser((prev) => (prev ? { ...prev, ...partial } : prev));
+  }, []);
+
+  return { user, loading, error, refresh: load, signOut, isAuthenticated: !!user, updateUser };
 }

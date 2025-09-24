@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useSession } from "@/app/components/hooks/useSession";
 import Modal from "@/app/components/ui/Modal";
 
 interface Props {
@@ -14,6 +15,7 @@ const ChangePasswordModal: React.FC<Props> = ({ open, onClose }) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const { refresh } = useSession();
 
   const handleSave = async () => {
     if (saving) return; setSaving(true); setError(null); setSuccess(false);
@@ -25,7 +27,7 @@ const ChangePasswordModal: React.FC<Props> = ({ open, onClose }) => {
       }
       setSuccess(true);
       setCurrent(""); setNext(""); setConfirm("");
-      setTimeout(() => { setSuccess(false); onClose(); }, 1200);
+  setTimeout(() => { setSuccess(false); onClose(); refresh(); }, 1200);
     } catch (e: any) {
       setError(e.message);
     } finally { setSaving(false); }

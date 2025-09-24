@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { signAuthToken, buildSessionCookie, buildRefreshCookie } from "@/lib/auth/jwt";
-import { issueRefreshToken } from "@/lib/auth/session";
+import { issueSessionToken } from "@/lib/auth/session";
 
 export async function POST(req: Request) {
   try {
@@ -26,10 +26,10 @@ export async function POST(req: Request) {
     });
 
   const token = await signAuthToken({ sub: user.id, email: user.email });
-  const refresh = await issueRefreshToken(user.id);
+  const sessionLong = await issueSessionToken(user.id, { ip: req.headers.get('x-forwarded-for'), userAgent: req.headers.get('user-agent') });
   const res = NextResponse.json({ ok: true, user });
   res.headers.append("Set-Cookie", buildSessionCookie(token));
-  res.headers.append("Set-Cookie", buildRefreshCookie(refresh.raw, 60 * 60 * 24 * 7));
+  res.headers.append("Set-Cookie", buildRefreshCookie(sessionLong.raw, 60 * 60 * 24 * 7));
     return res;
   } catch (e: any) {
     return NextResponse.json({ message: e?.message || "Server error" }, { status: 500 });

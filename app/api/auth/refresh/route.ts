@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import { readRefreshTokenFromRequest, buildSessionCookie, buildRefreshCookie } from "@/lib/auth/jwt";
-import { rotateRefreshToken } from "@/lib/auth/session";
+import { rotateSessionToken } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { signAuthToken } from "@/lib/auth/jwt";
 
 export async function POST(req: Request) {
   const refresh = readRefreshTokenFromRequest(req);
   if (!refresh) return NextResponse.json({ message: "No refresh token" }, { status: 401 });
-  const rotated = await rotateRefreshToken(refresh);
+  const rotated = await rotateSessionToken(refresh, { ip: req.headers.get('x-forwarded-for'), userAgent: req.headers.get('user-agent') });
   if (!rotated) return NextResponse.json({ message: "Invalid refresh token" }, { status: 401 });
   // We have the new token id; fetch its record to get userId
-  const tokenRecord = await prisma.refreshToken.findUnique({ where: { id: rotated.id } });
+  const tokenRecord = await prisma.session.findUnique({ where: { id: rotated.id } });
   if (!tokenRecord) return NextResponse.json({ message: "Invalid state" }, { status: 401 });
   const user = await prisma.user.findUnique({ where: { id: tokenRecord.userId } });
   if (!user) return NextResponse.json({ message: "User not found" }, { status: 401 });

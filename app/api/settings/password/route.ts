@@ -26,6 +26,7 @@ export async function PATCH(req: Request) {
   const valid = await bcrypt.compare(currentPassword, user.password);
   if (!valid) return NextResponse.json({ message: 'Invalid current password' }, { status: 401 });
   const hash = await bcrypt.hash(newPassword, 12);
-  await prisma.user.update({ where: { id: user.id }, data: { password: hash } });
+  await prisma.user.update({ where: { id: user.id }, data: { password: hash, firstLogin: false } });
+  await prisma.auditLog.create({ data: { userId: user.id, action: 'user.update_password' } });
   return NextResponse.json({ ok: true });
 }

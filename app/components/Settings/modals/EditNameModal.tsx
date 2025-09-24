@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useSession } from "@/app/components/hooks/useSession";
 import Modal from "@/app/components/ui/Modal";
 
 interface Props {
@@ -12,6 +13,7 @@ const EditNameModal: React.FC<Props> = ({ open, onClose }) => {
   const [last, setLast] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { refresh, updateUser } = useSession();
 
   const handleSave = async () => {
     if (saving) return; setSaving(true); setError(null);
@@ -21,7 +23,9 @@ const EditNameModal: React.FC<Props> = ({ open, onClose }) => {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.message || 'Failed to update name');
       }
-      onClose();
+  updateUser({ forename: first, surname: last });
+  onClose();
+  refresh();
     } catch (e: any) {
       setError(e.message);
     } finally { setSaving(false); }

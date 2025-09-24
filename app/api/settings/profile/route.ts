@@ -20,6 +20,7 @@ export async function PATCH(req: Request) {
   const body = await req.json();
   const { forename, surname } = body;
   if (!forename?.trim() || !surname?.trim()) return NextResponse.json({ message: "Invalid name" }, { status: 400 });
-  const updated = await prisma.user.update({ where: { id: user.id }, data: { forename: forename.trim(), surname: surname.trim() }, select: { id: true, email: true, forename: true, surname: true } });
+  const updated = await prisma.user.update({ where: { id: user.id }, data: { forename: forename.trim(), surname: surname.trim(), firstLogin: false }, select: { id: true, email: true, forename: true, surname: true } });
+  await prisma.auditLog.create({ data: { userId: user.id, action: 'user.update_name', metadata: { forename: updated.forename, surname: updated.surname } } });
   return NextResponse.json({ ok: true, user: updated });
 }
